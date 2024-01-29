@@ -18,6 +18,12 @@ query = "select date, pH, ammonia, nitrite, nitrate, KH, GH from water_param"
 df = pd.read_sql_query(query, conn)
 
 mode = "lines+markers"
+colors = {
+    'card': '#A3CEDF',
+    'plot': 'rgba(255,255,255,0)',
+    'legend': 'rgba(255,255,255,0)',
+    'text': '#FFFFFF'
+}
 
 # Define your layout
 app.layout = html.Div([
@@ -28,20 +34,24 @@ app.layout = html.Div([
         figure={}
     ),
 
-    dcc.Checklist(
-        className='series-selector',
-        id='series-selector',
-        options=[
-            {'label': 'pH', 'value': 'pH'},
-            {'label': 'Ammonia', 'value': 'ammonia'},
-            {'label': 'Nitrite', 'value': 'nitrite'},
-            {'label': 'Nitrate', 'value': 'nitrate'},
-            {'label': 'KH', 'value': 'KH'},
-            {'label': 'GH', 'value': 'GH'}
-        ],
-        value=['pH', 'ammonia', 'nitrite', 'nitrate', 'KH', 'GH'],
-        inline=True
+    html.Div(
+        id="checklist-container", children=
+        dcc.Checklist(
+            className='series-selector',
+            id='series-selector',
+            options=[
+                {'label': 'pH', 'value': 'pH'},
+                {'label': 'Ammonia', 'value': 'ammonia'},
+                {'label': 'Nitrite', 'value': 'nitrite'},
+                {'label': 'Nitrate', 'value': 'nitrate'},
+                {'label': 'KH', 'value': 'KH'},
+                {'label': 'GH', 'value': 'GH'}
+            ],
+            value=['pH', 'ammonia', 'nitrite', 'nitrate', 'KH', 'GH'],
+            inline=True
+        )
     )
+    
 ])
 
 # Callback to update the graph based on selected series
@@ -62,7 +72,11 @@ def update_graph(selected_series):
             'title': 'Water Quality over Time',
             'xaxis': {'title': 'Date'},
             'yaxis': {'title': 'Values'},
-            'hovermode': 'closest'
+            'hovermode': 'closest',
+            'plot_bgcolor': colors['plot'],
+            'paper_bgcolor': colors['card'],
+            'font': {'color': colors['text']},
+            'legend': {'bgcolor':colors['legend']}
         }
     }
 

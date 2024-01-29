@@ -9,17 +9,36 @@ html {
 
 body {
     font-family: 'Outfit', sans-serif;
+    max-width: 800px;
+    margin: auto;
+    background-color: #A2BADE;
 }
 
 H1 {
     font-weight: 700;
-    color: blue;
+    color: rgb(59, 59, 128);
+}
+
+#checklist-container {
+    display: flex;
+    max-width: auto;
+    background-color: aquamarine;
 }
 
 /* Style the checklist items */
 .series-selector {
     display: flex;
-    flex-direction: column;
-    margin-right: 10px;
-    color: red;
+    margin: 10px auto;
+    color: rgb(59, 59, 128);
+}
+
+#line-chart {
+    margin-bottom: 20px;
+    /* Chart background and text colors are changed in the Dash python code */
+}
+
+#checklist-container, #line-chart {
+    box-shadow: 8px 8px 21px 4px rgba(0,0,0,0.16);
+    border-radius: 15px;
+    overflow: hidden;
 }
