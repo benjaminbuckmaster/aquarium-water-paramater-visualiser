@@ -7,8 +7,9 @@ import pandas as pd
 conn = sqlite3.connect('aquarium.db')
 cursor = conn.cursor()
 
-# Create a Dash web application
-app = dash.Dash(__name__)
+# Initialize the app - incorporate css
+external_stylesheets = ['/assets/style.css']
+app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
 # SQL query
 query = "select date, pH, ammonia, nitrite, nitrate, KH, GH from water_param"
@@ -20,9 +21,15 @@ mode = "lines+markers"
 
 # Define your layout
 app.layout = html.Div([
-    # html.H1("Aquarium Water Parameter Visualiser v0.1"),
-    # Checklist for selecting data series to display
+    html.H1("Aquarium Water Parameter Visualiser v0.1"),
+    
+    dcc.Graph(
+        id='line-chart',
+        figure={}
+    ),
+
     dcc.Checklist(
+        className='series-selector',
         id='series-selector',
         options=[
             {'label': 'pH', 'value': 'pH'},
@@ -34,11 +41,6 @@ app.layout = html.Div([
         ],
         value=['pH', 'ammonia', 'nitrite', 'nitrate', 'KH', 'GH'],
         inline=True
-    ),
-    
-    dcc.Graph(
-        id='line-chart',
-        figure={}
     )
 ])
 

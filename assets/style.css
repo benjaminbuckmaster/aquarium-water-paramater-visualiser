@@ -1,0 +1,25 @@
+/* assets/style.css */
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100;700&display=swap');
+
+html {
+    font-size: 16px;
+    font-weight: 100;
+}
+
+body {
+    font-family: 'Outfit', sans-serif;
+}
+
+H1 {
+    font-weight: 700;
+    color: blue;
+}
+
+/* Style the checklist items */
+.series-selector {
+    display: flex;
+    flex-direction: column;
+    margin-right: 10px;
+    color: red;
+}
