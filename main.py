@@ -8,7 +8,7 @@ conn = sqlite3.connect('aquarium.db')
 cursor = conn.cursor()
 
 # Initialize the app
-app = dash.Dash(__name__)
+app = dash.Dash(__name__, title="Aquarium Water Parameter Visualiser")
 
 # SQL query
 query = "select date, pH, ammonia, nitrite, nitrate, KH, GH from water_param"
@@ -30,7 +30,7 @@ colors = {
 
 # Define your layout
 app.layout = html.Div([
-    html.H1("Aquarium Water Parameter Visualiser v0.1"),
+    html.H1("Aquarium Water Parameter Visualiser"),
     
     dcc.Graph(
         id='line-chart',
