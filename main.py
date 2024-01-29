@@ -1,5 +1,5 @@
 import dash
-from dash import html, dash_table, dcc
+from dash import html, dcc
 import sqlite3
 import pandas as pd
 
@@ -7,9 +7,8 @@ import pandas as pd
 conn = sqlite3.connect('aquarium.db')
 cursor = conn.cursor()
 
-# Initialize the app - incorporate css
-external_stylesheets = ['/assets/style.css']
-app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+# Initialize the app
+app = dash.Dash(__name__)
 
 # SQL query
 query = "select date, pH, ammonia, nitrite, nitrate, KH, GH from water_param"
@@ -17,12 +16,16 @@ query = "select date, pH, ammonia, nitrite, nitrate, KH, GH from water_param"
 # Fetch the results into a Pandas DataFrame
 df = pd.read_sql_query(query, conn)
 
-mode = "lines+markers"
+# Graph customisation
+graph_mode = "lines+markers"
 colors = {
-    'card': '#A3CEDF',
+    'card': 'rgba(255,255,255,0.1)',
     'plot': 'rgba(255,255,255,0)',
     'legend': 'rgba(255,255,255,0)',
-    'text': '#FFFFFF'
+    'text': 'rgba(59, 59, 128,0.8)',
+    'xaxis_color': 'rgba(59, 59, 128,0.8)',
+    'yaxis_color': 'rgba(59, 59, 128,0.8)',
+    'gridcolor': 'rgba(59, 59, 128,0.1)'
 }
 
 # Define your layout
@@ -31,54 +34,28 @@ app.layout = html.Div([
     
     dcc.Graph(
         id='line-chart',
-        figure={}
-    ),
-
-    html.Div(
-        id="checklist-container", children=
-        dcc.Checklist(
-            className='series-selector',
-            id='series-selector',
-            options=[
-                {'label': 'pH', 'value': 'pH'},
-                {'label': 'Ammonia', 'value': 'ammonia'},
-                {'label': 'Nitrite', 'value': 'nitrite'},
-                {'label': 'Nitrate', 'value': 'nitrate'},
-                {'label': 'KH', 'value': 'KH'},
-                {'label': 'GH', 'value': 'GH'}
+        figure={
+            'data': [
+                {'x': df['date'], 'y': df['pH'], 'mode': graph_mode, 'name': 'pH'},
+                {'x': df['date'], 'y': df['ammonia'], 'mode': graph_mode, 'name': 'Ammonia'},
+                {'x': df['date'], 'y': df['nitrite'], 'mode': graph_mode, 'name': 'Nitrite'},
+                {'x': df['date'], 'y': df['nitrate'], 'mode': graph_mode, 'name': 'Nitrate'},
+                {'x': df['date'], 'y': df['KH'], 'mode': graph_mode, 'name': 'KH'},
+                {'x': df['date'], 'y': df['GH'], 'mode': graph_mode, 'name': 'GH'}
             ],
-            value=['pH', 'ammonia', 'nitrite', 'nitrate', 'KH', 'GH'],
-            inline=True
-        )
-    )
-    
-])
-
-# Callback to update the graph based on selected series
-@app.callback(
-    dash.dependencies.Output('line-chart', 'figure'),
-    [dash.dependencies.Input('series-selector', 'value')]
-)
-def update_graph(selected_series):
-    data = []
-
-    # Create a trace for each selected series
-    for series in selected_series:
-        data.append({'x': df['date'], 'y': df[series], 'mode': mode, 'name': series})
-
-    return {
-        'data': data,
-        'layout': {
-            'title': 'Water Quality over Time',
-            'xaxis': {'title': 'Date'},
-            'yaxis': {'title': 'Values'},
-            'hovermode': 'closest',
-            'plot_bgcolor': colors['plot'],
-            'paper_bgcolor': colors['card'],
-            'font': {'color': colors['text']},
-            'legend': {'bgcolor':colors['legend']}
+            'layout': {
+                'title': 'Water Quality over Time',
+                'xaxis': {'title': 'Date', 'linecolor': colors['xaxis_color'], 'gridcolor': colors['gridcolor']},
+                'yaxis': {'title': 'Values', 'linecolor': colors['yaxis_color'], 'gridcolor': colors['gridcolor']},
+                'hovermode': 'closest',
+                'plot_bgcolor': colors['plot'],
+                'paper_bgcolor': colors['card'],
+                'font': {'color': colors['text']},
+                'legend': {'bgcolor':colors['legend']}
+            }
         }
-    }
+    ) 
+])
 
 # Run the app
 if __name__ == '__main__':
